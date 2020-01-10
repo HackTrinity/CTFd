@@ -1,27 +1,33 @@
 import os
 
+def var_or_secret(var, default=None, default_file=None, binary=False):
+    value = os.getenv(var)
+    if not value:
+        try:
+            secret_file = os.environ(f"{var}_FILE", default_file)
+            if secret_file:
+                with open(secret_file, "rb" if binary else "r") as secret:
+                    value = secret.read()
+                    if not binary:
+                        value = value.strip()
+        except (OSError, IOError):
+            value = default
+    return value
+
+
 """ GENERATE SECRET KEY """
 
-if not os.getenv("SECRET_KEY"):
-    # Attempt to read the secret from the secret file
-    # This will fail if the secret has not been written
+key = var_or_secret("SECRET_KEY", default_file=".ctfd_secret_key", binary=True)
+if not key:
+    key = os.urandom(64)
+    # Attempt to write the secret file
+    # This will fail if the filesystem is read-only
     try:
-        with open(".ctfd_secret_key", "rb") as secret:
-            key = secret.read()
+        with open(os.getenv("SECRET_KEY_FILE", ".ctfd_secret_key"), "wb") as secret:
+            secret.write(key)
+            secret.flush()
     except (OSError, IOError):
-        key = None
-
-    if not key:
-        key = os.urandom(64)
-        # Attempt to write the secret file
-        # This will fail if the filesystem is read-only
-        try:
-            with open(".ctfd_secret_key", "wb") as secret:
-                secret.write(key)
-                secret.flush()
-        except (OSError, IOError):
-            pass
-
+        pass
 
 """ SERVER SETTINGS """
 
@@ -62,7 +68,7 @@ class Config(object):
         e.g. redis://user:password@localhost:6379
         http://pythonhosted.org/Flask-Caching/#configuring-flask-caching
     """
-    SECRET_KEY = os.getenv("SECRET_KEY") or key
+    SECRET_KEY = key
     DATABASE_URL = os.getenv("DATABASE_URL") or "sqlite:///{}/ctfd.db".format(
         os.path.dirname(os.path.abspath(__file__))
     )
@@ -153,10 +159,10 @@ class Config(object):
     MAIL_PORT = os.getenv("MAIL_PORT")
     MAIL_USEAUTH = os.getenv("MAIL_USEAUTH")
     MAIL_USERNAME = os.getenv("MAIL_USERNAME")
-    MAIL_PASSWORD = os.getenv("MAIL_PASSWORD")
+    MAIL_PASSWORD = var_or_secret("MAIL_PASSWORD")
     MAIL_TLS = os.getenv("MAIL_TLS") or False
     MAIL_SSL = os.getenv("MAIL_SSL") or False
-    MAILGUN_API_KEY = os.getenv("MAILGUN_API_KEY")
+    MAILGUN_API_KEY = var_or_secret("MAILGUN_API_KEY")
     MAILGUN_BASE_URL = os.getenv("MAILGUN_BASE_URL")
 
     """
@@ -197,7 +203,7 @@ class Config(object):
     )
     if UPLOAD_PROVIDER == "s3":
         AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
-        AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
+        AWS_SECRET_ACCESS_KEY = var_or_secret("AWS_SECRET_ACCESS_KEY")
         AWS_S3_BUCKET = os.getenv("AWS_S3_BUCKET")
         AWS_S3_ENDPOINT_URL = os.getenv("AWS_S3_ENDPOINT_URL")
 
@@ -249,7 +255,7 @@ class Config(object):
         Register an event at https://majorleaguecyber.org/ and use the Client ID and Client Secret here
     """
     OAUTH_CLIENT_ID = os.getenv("OAUTH_CLIENT_ID")
-    OAUTH_CLIENT_SECRET = os.getenv("OAUTH_CLIENT_SECRET")
+    OAUTH_CLIENT_SECRET = var_or_secret("OAUTH_CLIENT_SECRET")
 
 
 class TestingConfig(Config):
