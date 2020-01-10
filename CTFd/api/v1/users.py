@@ -302,5 +302,12 @@ class UserEmails(Resource):
             )
 
         result, response = sendmail(addr=user.email, text=text)
+        if not result:
+            return {
+                "success": False,
+                "errors": {
+                    "text": [response]
+                }
+            }, 500
 
         return {"success": result, "data": {}}
