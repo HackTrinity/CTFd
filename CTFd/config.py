@@ -4,7 +4,7 @@ def var_or_secret(var, default=None, default_file=None, binary=False):
     value = os.getenv(var)
     if not value:
         try:
-            secret_file = os.environ(f"{var}_FILE", default_file)
+            secret_file = os.getenv(f"{var}_FILE", default_file)
             if secret_file:
                 with open(secret_file, "rb" if binary else "r") as secret:
                     value = secret.read()
@@ -68,10 +68,11 @@ class Config(object):
         e.g. redis://user:password@localhost:6379
         http://pythonhosted.org/Flask-Caching/#configuring-flask-caching
     """
+    DEBUG = os.getenv('DEBUG')
     SECRET_KEY = key
-    DATABASE_URL = os.getenv("DATABASE_URL") or "sqlite:///{}/ctfd.db".format(
+    DATABASE_URL = var_or_secret("DATABASE_URL", default="sqlite:///{}/ctfd.db".format(
         os.path.dirname(os.path.abspath(__file__))
-    )
+    ))
     REDIS_URL = os.getenv("REDIS_URL")
 
     SQLALCHEMY_DATABASE_URI = DATABASE_URL
