@@ -2,6 +2,7 @@ import datetime
 import logging
 import os
 import sys
+import socket
 
 from flask import abort, redirect, render_template, request, session, url_for
 from sqlalchemy.exc import IntegrityError, InvalidRequestError
@@ -40,7 +41,6 @@ from CTFd.utils.security.auth import login_user, logout_user, lookup_user_token
 from CTFd.utils.security.csrf import generate_nonce
 from CTFd.utils.user import authed, get_current_team, get_current_user, get_ip
 
-
 def init_template_filters(app):
     app.jinja_env.filters["markdown"] = markdown
     app.jinja_env.filters["unix_time"] = unix_time
@@ -74,6 +74,7 @@ def init_template_globals(app):
     app.jinja_env.globals.update(scores_visible=scores_visible)
     app.jinja_env.globals.update(get_mode_as_word=get_mode_as_word)
     app.jinja_env.globals.update(integrations=integrations)
+    app.jinja_env.globals.update(system_hostname=socket.gethostname())
 
 
 def init_logs(app):
