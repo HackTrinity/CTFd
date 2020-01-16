@@ -170,11 +170,9 @@ class Config(object):
     === LOGS ===
     LOG_FOLDER:
         The location where logs are written. These are the logs for CTFd key submissions, registrations, and logins.
-        The default location is the CTFd/logs folder.
+        The default location is /var/log/CTFd.
     """
-    LOG_FOLDER = os.getenv("LOG_FOLDER") or os.path.join(
-        os.path.dirname(os.path.abspath(__file__)), "logs"
-    )
+    LOG_FOLDER = os.getenv("LOG_FOLDER") or "/var/log/CTFd"
 
     """
     === UPLOADS ===
@@ -183,7 +181,7 @@ class Config(object):
         Specifies the service that CTFd should use to store files.
 
     UPLOAD_FOLDER:
-        The location where files are uploaded. The default destination is the CTFd/uploads folder.
+        The location where files are uploaded. The default destination is /var/lib/CTFd/uploads.
 
     AWS_ACCESS_KEY_ID:
         AWS access token used to authenticate to the S3 bucket.
@@ -199,9 +197,7 @@ class Config(object):
 
     """
     UPLOAD_PROVIDER = os.getenv("UPLOAD_PROVIDER") or "filesystem"
-    UPLOAD_FOLDER = os.getenv("UPLOAD_FOLDER") or os.path.join(
-        os.path.dirname(os.path.abspath(__file__)), "uploads"
-    )
+    UPLOAD_FOLDER = os.getenv("UPLOAD_FOLDER") or "/var/lib/CTFd/uploads"
     if UPLOAD_PROVIDER == "s3":
         AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
         AWS_SECRET_ACCESS_KEY = var_or_secret("AWS_SECRET_ACCESS_KEY")

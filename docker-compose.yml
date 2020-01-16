@@ -4,8 +4,6 @@ services:
   app:
     build: .
     image: ${REGISTRY}/ctfd
-    user: root
-    restart: always
     ports:
       - "8000:8000"
     environment:
@@ -13,12 +11,11 @@ services:
       - DATABASE_URL=mysql+pymysql://root:ctfd@db/ctfd
       - REDIS_URL=redis://cache:6379
       - WORKERS=1
-      - LOG_FOLDER=/var/log/CTFd
       - ACCESS_LOG=-
       - ERROR_LOG=-
     volumes:
-      - .data/CTFd/logs:/var/log/CTFd
-      - .data/CTFd/uploads:/var/lib/uploads
+      - .data/logs:/var/log/CTFd
+      - .data/uploads:/var/lib/CTFd/uploads
       - .:/opt/CTFd:ro
     depends_on:
       - db
@@ -28,7 +25,6 @@ services:
 
   db:
     image: mariadb:10
-    restart: always
     environment:
       - MYSQL_ROOT_PASSWORD=ctfd
       - MYSQL_USER=ctfd
@@ -48,7 +44,6 @@ services:
 
   cache:
     image: redis:alpine
-    restart: always
     volumes:
     - .data/redis:/data
     networks:

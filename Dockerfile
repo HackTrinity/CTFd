@@ -7,7 +7,12 @@ RUN apk --no-cache add linux-headers libffi-dev gcc make musl-dev mysql-client g
     apk --no-cache del linux-headers libffi-dev gcc make musl-dev openssl-dev
 
 COPY . /opt/CTFd
-VOLUME /var/log/CTFd /var/lib/uploads
+
+RUN apk --no-cache add su-exec && \
+    addgroup -S ctfd && \
+    adduser -SDH -G ctfd ctfd && \
+    install -dD -o ctfd -g ctfd /var/log/CTFd /var/lib/CTFd/uploads
+VOLUME /var/log/CTFd /var/lib/CTFd/uploads
 
 EXPOSE 8000/tcp
 ENTRYPOINT ["/opt/CTFd/docker-entrypoint.sh"]
