@@ -4,12 +4,13 @@ services:
   app:
     build: .
     image: ${REGISTRY}/ctfd
-    restart: on-failure
+    user: root
+    restart: always
     ports:
       - "8000:8000"
     environment:
       - UPLOAD_FOLDER=/var/uploads
-      - DATABASE_URL=mysql+mysqldb://root:ctfd@db/ctfd
+      - DATABASE_URL=mysql+pymysql://root:ctfd@db/ctfd
       - REDIS_URL=redis://cache:6379
       - WORKERS=1
       - LOG_FOLDER=/var/log/CTFd
@@ -22,12 +23,12 @@ services:
     depends_on:
       - db
     networks:
-      - default
-      - internal
+        default:
+        internal:
 
   db:
     image: mariadb:10
-    restart: on-failure
+    restart: always
     environment:
       - MYSQL_ROOT_PASSWORD=ctfd
       - MYSQL_USER=ctfd
@@ -36,20 +37,22 @@ services:
     volumes:
       - .data/mysql:/var/lib/mysql
     networks:
-      - internal
+        internal:
     # This command is required to set important mariadb defaults
     command:
+      - mysqld
       - --character-set-server=utf8mb4
       - --collation-server=utf8mb4_unicode_ci
       - --wait_timeout=28800
+      - --log-warnings=0
 
   cache:
     image: redis:alpine
-    restart: on-failure
+    restart: always
     volumes:
     - .data/redis:/data
     networks:
-      - internal
+      internal:
 
 networks:
   default:

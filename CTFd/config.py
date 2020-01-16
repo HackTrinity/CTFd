@@ -54,7 +54,7 @@ class Config(object):
         The URI that specifies the username, password, hostname, port, and database of the server
         used to hold the CTFd database.
 
-        e.g. mysql+mysqldb://root:<YOUR_PASSWORD_HERE>@localhost/ctfd
+        e.g. mysql+pymysql://root:<YOUR_PASSWORD_HERE>@localhost/ctfd
 
     CACHE_TYPE:
         Specifies how CTFd should cache configuration values. If CACHE_TYPE is set to 'redis', CTFd will make use
