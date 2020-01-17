@@ -3,7 +3,7 @@ version: '3'
 services:
   app:
     build: .
-    image: ${REGISTRY}/ctfd
+    image: $DOCKER_REGISTRY/ctfd
     ports:
       - "8000:8000"
     environment:

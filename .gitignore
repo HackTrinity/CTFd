@@ -73,3 +73,5 @@ CTFd/uploads
 
 # JS
 node_modules/
+
+/.env
