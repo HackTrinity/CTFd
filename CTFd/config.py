@@ -10,6 +10,8 @@ def var_or_secret(var, default=None, default_file=None, binary=False):
                     value = secret.read()
                     if not binary:
                         value = value.strip()
+            else:
+                value = default
         except (OSError, IOError):
             value = default
     return value
