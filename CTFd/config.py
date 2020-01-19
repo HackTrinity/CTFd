@@ -72,9 +72,10 @@ class Config(object):
     """
     DEBUG = os.getenv('DEBUG')
     SECRET_KEY = key
-    DATABASE_URL = var_or_secret("DATABASE_URL", default="sqlite:///{}/ctfd.db".format(
+    DATABASE_PASSWORD = var_or_secret("DATABASE_PASSWORD")
+    DATABASE_URL = os.getenv("DATABASE_URL", default="sqlite:///{}/ctfd.db".format(
         os.path.dirname(os.path.abspath(__file__))
-    ))
+    )).format(password=DATABASE_PASSWORD)
     REDIS_URL = os.getenv("REDIS_URL")
 
     SQLALCHEMY_DATABASE_URI = DATABASE_URL
