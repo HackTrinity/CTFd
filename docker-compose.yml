@@ -1,6 +1,21 @@
 version: '3'
 
 services:
+  chad:
+    image: $DOCKER_REGISTRY/chad/server
+    environment:
+      - REDIS_URL=redis://cache/1
+      - CLEANUP_DISABLED=yes
+      - DOCKER_REGISTRY=$DOCKER_REGISTRY
+      - GATEWAY_IMAGE=$DOCKER_REGISTRY/chad/gateway
+    volumes:
+      - .data/chad_pki:/etc/chad_pki
+      - /var/run/docker.sock:/run/docker.sock
+    depends_on:
+      - cache
+    networks:
+      - internal
+
   app:
     build: .
     image: $DOCKER_REGISTRY/ctfd
@@ -9,7 +24,7 @@ services:
     environment:
       - UPLOAD_FOLDER=/var/uploads
       - DATABASE_URL=mysql+pymysql://root:ctfd@db/ctfd
-      - REDIS_URL=redis://cache:6379
+      - REDIS_URL=redis://cache/0
       - WORKERS=1
       - ACCESS_LOG=-
       - ERROR_LOG=-
@@ -19,9 +34,10 @@ services:
       - .:/opt/CTFd:ro
     depends_on:
       - db
+      - cache
     networks:
-        default:
-        internal:
+      - default
+      - internal
 
   db:
     image: mariadb:10
@@ -33,7 +49,7 @@ services:
     volumes:
       - .data/mysql:/var/lib/mysql
     networks:
-        internal:
+      - internal
     # This command is required to set important mariadb defaults
     command:
       - mysqld
@@ -45,7 +61,7 @@ services:
   cache:
     image: redis:alpine
     volumes:
-    - .data/redis:/data
+      - .data/redis:/data
     networks:
       internal:
 
