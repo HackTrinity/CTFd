@@ -42,11 +42,16 @@ python manage.py db upgrade
 chown -R ctfd:ctfd /var/log/CTFd /var/lib/CTFd/uploads
 
 # Start CTFd
-echo "Starting CTFd"
-exec su-exec ctfd:ctfd gunicorn 'CTFd:create_app()' \
-    --bind '0.0.0.0:8000' \
-    --workers $WORKERS \
-    --worker-tmp-dir "$WORKER_TEMP_DIR" \
-    --worker-class "$WORKER_CLASS" \
-    --access-logfile "$ACCESS_LOG" \
-    --error-logfile "$ERROR_LOG"
+if [ ! -z "$DEBUG" ]; then
+    echo "Starting CTFd in debug mode"
+    exec su-exec ctfd:ctfd python serve.py --port 8000
+else
+    echo "Starting CTFd"
+    exec su-exec ctfd:ctfd gunicorn 'CTFd:create_app()' \
+        --bind '0.0.0.0:8000' \
+        --workers $WORKERS \
+        --worker-tmp-dir "$WORKER_TEMP_DIR" \
+        --worker-class "$WORKER_CLASS" \
+        --access-logfile "$ACCESS_LOG" \
+        --error-logfile "$ERROR_LOG"
+fi

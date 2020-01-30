@@ -22,10 +22,10 @@ services:
     ports:
       - "8000:8000"
     environment:
+      - DEBUG=yes
       - UPLOAD_FOLDER=/var/uploads
       - DATABASE_URL=mysql+pymysql://root:ctfd@db/ctfd
       - REDIS_URL=redis://cache/0
-      - WORKERS=1
       - ACCESS_LOG=-
       - ERROR_LOG=-
     volumes:
