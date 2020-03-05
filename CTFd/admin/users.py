@@ -7,6 +7,7 @@ from CTFd.utils import get_config
 from CTFd.utils.decorators import admins_only
 from CTFd.utils.helpers import get_errors
 from CTFd.utils.modes import TEAMS_MODE
+from CTFd.utils.user import get_badges
 
 
 @admin.route("/admin/users")
@@ -57,6 +58,7 @@ def users_listing():
             curr_page=None,
             q=q,
             field=field,
+            badges=get_badges(users),
         )
 
     page = abs(int(page))
@@ -69,7 +71,7 @@ def users_listing():
     pages = int(count / results_per_page) + (count % results_per_page > 0)
 
     return render_template(
-        "admin/users/users.html", users=users, pages=pages, curr_page=page
+        "admin/users/users.html", users=users, pages=pages, curr_page=page, badges=get_badges(users),
     )
 
 

@@ -37,6 +37,9 @@
 										<span class="badge badge-primary">Official</span>
 									</a>
 								{% endif %}
+								{% if badges[user.email] %}
+									<span class="badge badge-primary">{{ badges[user.email] }}</span>
+								{% endif %}
 							</td>
 							<td class="text-center" style="width: 10px;">
 								{% if user.website and (user.website.startswith('http://') or user.website.startswith('https://')) %}

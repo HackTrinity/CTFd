@@ -1,4 +1,6 @@
-from flask import Blueprint, render_template, request
+import re
+
+from flask import Blueprint, render_template, request, current_app as app
 
 from CTFd.models import Users
 from CTFd.utils import config
@@ -7,7 +9,7 @@ from CTFd.utils.decorators.visibility import (
     check_account_visibility,
     check_score_visibility,
 )
-from CTFd.utils.user import get_current_user
+from CTFd.utils.user import get_current_user, get_badges
 
 users = Blueprint("users", __name__)
 
@@ -28,7 +30,7 @@ def listing():
     )
 
     pages = int(count / results_per_page) + (count % results_per_page > 0)
-    return render_template("users/users.html", users=users, pages=pages, curr_page=page)
+    return render_template("users/users.html", users=users, pages=pages, curr_page=page, badges=get_badges(users))
 
 
 @users.route("/profile")

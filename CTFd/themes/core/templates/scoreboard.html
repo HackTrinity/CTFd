@@ -60,6 +60,10 @@
 										</a>
 										{% endif %}
 									{% endif %}
+
+									{% if get_config('user_mode') == 'users' and badges[standing.email] %}
+										<span class="badge badge-primary">{{ badges[standing.email] }}</span>
+									{% endif %}
 								</a>
 							</td>
 							<td>{{ standing.score }}</td>

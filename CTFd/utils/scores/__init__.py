@@ -81,6 +81,7 @@ def get_standings(count=None, admin=False):
         standings_query = (
             db.session.query(
                 Model.id.label("account_id"),
+                Model.email.label("email"),
                 Model.oauth_id.label("oauth_id"),
                 Model.name.label("name"),
                 Model.hidden,
@@ -94,6 +95,7 @@ def get_standings(count=None, admin=False):
         standings_query = (
             db.session.query(
                 Model.id.label("account_id"),
+                Model.email.label("email"),
                 Model.oauth_id.label("oauth_id"),
                 Model.name.label("name"),
                 sumscores.columns.score,

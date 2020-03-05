@@ -85,3 +85,15 @@ def get_wrong_submissions_per_minute(account_id):
         .all()
     )
     return len(fails)
+
+# very ugly hack
+EMAIL_DOMAIN_REGEX = re.compile(r'.*@(.*)$')
+def get_badges(users):
+    dom_labels = app.config['MAIL_LABELS']
+    badges = {}
+    for u in users:
+        dom = EMAIL_DOMAIN_REGEX.match(u.email).group(1)
+        if dom in dom_labels:
+            badges[u.email] = dom_labels[dom]
+
+    return badges

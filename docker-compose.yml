@@ -28,6 +28,7 @@ services:
       - REDIS_URL=redis://cache/0
       - ACCESS_LOG=-
       - ERROR_LOG=-
+      - 'MAIL_LABELS={"example.com":"Example","gmail.com":"Google"}'
     volumes:
       - .data/logs:/var/log/CTFd
       - .data/uploads:/var/uploads
