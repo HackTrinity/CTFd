@@ -1,3 +1,7 @@
 [submodule "plugins/CHAD"]
 	path = plugins/CHAD
 	url = https://github.com/HackTrinity/CHAD
+[submodule "plugins/ctfd-recaptcha-plugin"]
+	path = plugins/ctfd-recaptcha-plugin
+	url = https://github.com/HackTrinity/ctfd-recaptcha-plugin
+	branch = hacktrinity
