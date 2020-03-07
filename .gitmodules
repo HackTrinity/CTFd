@@ -1,0 +1,3 @@
+[submodule "plugins/CHAD"]
+	path = plugins/CHAD
+	url = https://github.com/HackTrinity/CHAD

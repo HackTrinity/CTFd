@@ -13,7 +13,7 @@ RUN apk --no-cache add su-exec && \
     install -dD -o ctfd -g ctfd /var/log/CTFd /var/lib/CTFd/uploads
 VOLUME /var/log/CTFd /var/lib/CTFd/uploads
 
-COPY CTFd docker-entrypoint.sh manage.py serve.py /opt/CTFd/
+COPY CTFd docker-entrypoint.sh manage.py serve.py plugins /opt/CTFd/
 
 EXPOSE 8000/tcp
 ENTRYPOINT ["/opt/CTFd/docker-entrypoint.sh"]
